@@ -1,0 +1,88 @@
+{
+  "/": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Homepage is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  },
+  "/product/:id": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Product details are public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  },
+  "/cart": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Cart is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  },
+  "/checkout": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to checkout",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login"
+    }
+  },
+  "/order-confirmation/:orderId": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view orders",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login"
+    }
+  },
+  "/login": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Login page is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  },
+  "/signup": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "Signup page is public",
+            "rule": "public"
+          }
+        ]
+      }
+    }
+  }
+}

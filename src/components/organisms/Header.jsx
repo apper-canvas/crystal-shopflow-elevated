@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/layouts/Root";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
-import { useCart } from "@/hooks/useCart";
+import Home from "@/components/pages/Home";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,7 +14,9 @@ const Header = () => {
   const { cart } = useCart();
   const navigate = useNavigate();
 
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const { user } = useSelector(state => state.user);
+  const { logout } = useAuth();
 
   const handleSearch = (query) => {
     if (query.trim()) {
@@ -22,9 +27,9 @@ const Header = () => {
     setIsSearchOpen(false);
   };
 
-  const categories = [
+const categories = [
     "Electronics",
-    "Clothing",
+    "Clothing", 
     "Home & Garden",
     "Sports",
     "Books",
@@ -57,7 +62,7 @@ const Header = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
+{/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
@@ -96,6 +101,21 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
+            {/* User Section */}
+            {user && (
+              <div className="hidden md:flex items-center space-x-4">
+                <span className="text-sm text-gray-700">
+                  Welcome, {user.firstName || user.name || 'User'}
+                </span>
+                <button
+                  onClick={logout}
+                  className="text-sm text-red-600 hover:text-red-800 transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+
             {/* Mobile Search Toggle */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
@@ -181,6 +201,21 @@ const Header = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* Mobile User Section */}
+                {user && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <p className="text-sm text-gray-600 mb-2">
+                      Welcome, {user.firstName || user.name || 'User'}
+                    </p>
+                    <button
+                      onClick={logout}
+                      className="text-sm text-red-600 hover:text-red-800 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
               </nav>
             </motion.div>
           )}
