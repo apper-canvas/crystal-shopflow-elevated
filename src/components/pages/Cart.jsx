@@ -1,17 +1,22 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import CartItem from "@/components/molecules/CartItem";
-import Button from "@/components/atoms/Button";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
+import React from "react";
 import { useCart } from "@/hooks/useCart";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import CartItem from "@/components/molecules/CartItem";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Checkout from "@/components/pages/Checkout";
+import Button from "@/components/atoms/Button";
 
-const Cart = () => {
-  const { cart, clearCart } = useCart();
+function Cart() {
   const navigate = useNavigate();
-
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = subtotal > 50 ? 0 : 9.99;
+  const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
+  
+  // Calculate order totals
+  const subtotal = getTotalPrice();
+  const shipping = subtotal >= 50 ? 0 : 5.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
@@ -53,10 +58,20 @@ const Cart = () => {
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Shopping Cart ({cart.length} items)
-          </h1>
+<div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              title="Go back"
+            >
+              <ApperIcon name="ArrowLeft" size={20} />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Shopping Cart ({cart.length} items)
+            </h1>
+          </div>
           <button
             onClick={clearCart}
             className="text-red-600 hover:text-red-700 font-medium transition-colors"
