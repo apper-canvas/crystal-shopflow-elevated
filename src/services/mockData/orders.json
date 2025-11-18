@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "items": [
+      {
+        "productId": "1",
+        "name": "Wireless Bluetooth Headphones",
+        "price": 199.99,
+        "quantity": 1,
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop",
+        "selectedVariant": { "color": "Black", "name": "Midnight Black" }
+      }
+    ],
+    "total": 215.99,
+    "shippingAddress": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "555-1234",
+      "address": "123 Main St",
+      "city": "San Francisco",
+      "state": "CA",
+      "zipCode": "94102",
+      "country": "United States"
+    },
+    "paymentMethod": "card",
+    "status": "completed",
+    "createdAt": "2024-01-15T10:30:00Z"
+  }
+]
