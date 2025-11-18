@@ -12,11 +12,11 @@ const CartItem = ({ item }) => {
     }).format(price);
   };
 
-  const handleQuantityChange = (newQuantity) => {
+const handleQuantityChange = (newQuantity) => {
     if (newQuantity <= 0) {
-      removeFromCart(item.productId);
+      removeFromCart(item.productId, item.selectedVariant);
     } else {
-      updateQuantity(item.productId, newQuantity);
+      updateQuantity(item.productId, newQuantity, item.selectedVariant);
     }
   };
 
@@ -69,8 +69,8 @@ const CartItem = ({ item }) => {
       </div>
 
       {/* Remove Button */}
-      <button
-        onClick={() => removeFromCart(item.productId)}
+<button
+        onClick={() => removeFromCart(item.productId, item.selectedVariant)}
         className="text-gray-400 hover:text-red-500 transition-colors"
       >
         <ApperIcon name="Trash2" className="w-4 h-4" />

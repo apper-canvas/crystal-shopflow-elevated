@@ -79,8 +79,8 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
-    addToCart({
-      productId: product.id,
+addToCart({
+      productId: product.Id || product.id,
       name: product.name,
       price: product.price,
       quantity: quantity,
