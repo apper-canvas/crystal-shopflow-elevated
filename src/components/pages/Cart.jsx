@@ -12,10 +12,10 @@ import Button from "@/components/atoms/Button";
 
 function Cart() {
   const navigate = useNavigate();
-  const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
+const { cart, removeFromCart, updateQuantity, clearCart, getCartTotal } = useCart();
   
   // Calculate order totals
-  const subtotal = getTotalPrice();
+  const subtotal = getCartTotal();
   const shipping = subtotal >= 50 ? 0 : 5.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
