@@ -1,22 +1,30 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import ProductGrid from "@/components/organisms/ProductGrid";
-import ApperIcon from "@/components/ApperIcon";
 import { productService } from "@/services/api/productService";
+import ApperIcon from "@/components/ApperIcon";
+import ProductGrid from "@/components/organisms/ProductGrid";
 
 const Home = () => {
-  const [searchParams] = useSearchParams();
+const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const searchQuery = searchParams.get("search");
-  const categoryFilter = searchParams.get("category");
-
+  
+  const searchQuery = searchParams.get('search') || '';
+  const categoryFilter = searchParams.get('category') || '';
+  
   useEffect(() => {
     loadProducts();
   }, [searchQuery, categoryFilter]);
+
+  // Ensure products load when navigating back to home page
+  useEffect(() => {
+    if (location.pathname === '/') {
+      loadProducts();
+    }
+  }, [location.pathname]);
 
 const loadProducts = async () => {
     try {
