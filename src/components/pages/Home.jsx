@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { productService } from "@/services/api/productService";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/layouts/Root";
 import ApperIcon from "@/components/ApperIcon";
 import ProductGrid from "@/components/organisms/ProductGrid";
 
