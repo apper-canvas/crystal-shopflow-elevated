@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { productService } from "@/services/api/productService";
+import { useAuth } from "@/contexts/AuthContext";
 import ApperIcon from "@/components/ApperIcon";
 import ProductGrid from "@/components/organisms/ProductGrid";
 
@@ -15,16 +16,27 @@ const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
   const categoryFilter = searchParams.get('category') || '';
   
+// Add authentication state tracking for proper data loading
+  const { isAuthenticated, user } = useAuth();
+
   useEffect(() => {
     loadProducts();
-  }, [searchQuery, categoryFilter]);
+  }, [searchQuery, categoryFilter, isAuthenticated]);
 
-  // Ensure products load when navigating back to home page
+  // Ensure products load when navigating back to home page or authentication changes
   useEffect(() => {
     if (location.pathname === '/') {
       loadProducts();
     }
-  }, [location.pathname]);
+  }, [location.pathname, isAuthenticated]);
+
+  // Handle authentication state changes - reload products when user logs in
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      // User just logged in, reload products with authenticated context
+      loadProducts();
+    }
+  }, [isAuthenticated, user]);
 
 const loadProducts = async () => {
     try {
