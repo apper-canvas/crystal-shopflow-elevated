@@ -26,26 +26,33 @@ const ProductGrid = ({ products, loading, error }) => {
     { value: "newest", label: "Newest First" }
   ];
 
-  const filteredAndSortedProducts = useMemo(() => {
-    if (!products) return [];
+const filteredAndSortedProducts = useMemo(() => {
+    if (!products || !Array.isArray(products)) return [];
     
     let filtered = products.filter(product => {
-      // Category filter
-      if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
+      // Ensure product exists and has required properties
+      if (!product) return false;
+      
+      // Category filter - handle null/undefined category
+      if (filters.categories.length > 0 && product.category) {
+        if (!filters.categories.includes(product.category)) {
+          return false;
+        }
+      }
+      
+      // Price filter - handle null/undefined price
+      const productPrice = product.price || 0;
+      if (productPrice < filters.priceRange.min || productPrice > filters.priceRange.max) {
         return false;
       }
       
-      // Price filter
-      if (product.price < filters.priceRange.min || product.price > filters.priceRange.max) {
+      // Rating filter - handle null/undefined rating
+      const productRating = product.rating || 0;
+      if (productRating < filters.minRating) {
         return false;
       }
       
-      // Rating filter
-      if (product.rating < filters.minRating) {
-        return false;
-      }
-      
-      // Stock filter
+      // Stock filter - handle null/undefined stock status
       if (filters.inStock && !product.inStock) {
         return false;
       }
@@ -53,19 +60,21 @@ const ProductGrid = ({ products, loading, error }) => {
       return true;
     });
 
-    // Sort products
+    // Sort products with null safety
     filtered.sort((a, b) => {
+      if (!a || !b) return 0;
+      
       switch (sortBy) {
         case "price-low":
-          return a.price - b.price;
+          return (a.price || 0) - (b.price || 0);
         case "price-high":
-          return b.price - a.price;
+          return (b.price || 0) - (a.price || 0);
         case "rating":
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case "newest":
           return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
         default:
-          return a.name.localeCompare(b.name);
+          return (a.name || '').localeCompare(b.name || '');
       }
     });
 
@@ -93,13 +102,13 @@ const ProductGrid = ({ products, loading, error }) => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header with controls */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+<div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             Our Products
           </h1>
           <p className="text-gray-600 mt-2">
-            Showing {filteredAndSortedProducts.length} of {products?.length || 0} products
+            Showing {filteredAndSortedProducts?.length || 0} of {Array.isArray(products) ? products.length : 0} products
           </p>
         </div>
 

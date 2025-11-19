@@ -18,32 +18,47 @@ const Home = () => {
     loadProducts();
   }, [searchQuery, categoryFilter]);
 
-  const loadProducts = async () => {
+const loadProducts = async () => {
     try {
       setLoading(true);
       setError("");
       
       let data = await productService.getAll();
       
-      // Apply search filter
-      if (searchQuery) {
-        data = data.filter(product =>
-          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.category.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+      // Validate data is array and contains valid products
+      if (!Array.isArray(data)) {
+        console.warn("Product service returned non-array data:", data);
+        data = [];
       }
       
-      // Apply category filter
+      // Apply search filter with null safety
+      if (searchQuery) {
+        data = data.filter(product => {
+          if (!product) return false;
+          const name = product.name || '';
+          const description = product.description || '';
+          const category = product.category || '';
+          const query = searchQuery.toLowerCase();
+          
+          return name.toLowerCase().includes(query) ||
+                 description.toLowerCase().includes(query) ||
+                 category.toLowerCase().includes(query);
+        });
+      }
+      
+      // Apply category filter with null safety
       if (categoryFilter) {
-        data = data.filter(product => 
-          product.category.toLowerCase() === categoryFilter.toLowerCase()
-        );
+        data = data.filter(product => {
+          if (!product || !product.category) return false;
+          return product.category.toLowerCase() === categoryFilter.toLowerCase();
+        });
       }
       
       setProducts(data);
     } catch (err) {
+      console.error("Error loading products:", err);
       setError("Failed to load products. Please try again.");
+      setProducts([]);
     } finally {
       setLoading(false);
     }

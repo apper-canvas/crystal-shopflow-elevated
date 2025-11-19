@@ -54,41 +54,40 @@ const mapToDatabase = (product) => {
 
 // Map database fields to frontend format
 const mapFromDatabase = (dbProduct) => {
-  if (!dbProduct) return dbProduct;
+  if (!dbProduct) return null;
   
   return {
-    id: dbProduct.Id,
-    name: dbProduct.Name,
-    description: dbProduct.description_c,
-    price: dbProduct.price_c,
-    rating: dbProduct.rating_c,
-    reviewCount: dbProduct.review_count_c,
-    category: dbProduct.category_c,
-    inStock: dbProduct.in_stock_c,
+    id: dbProduct.Id || 0,
+    name: dbProduct.Name || 'Unnamed Product',
+    description: dbProduct.description_c || '',
+    price: dbProduct.price_c || 0,
+    rating: dbProduct.rating_c || 0,
+    reviewCount: dbProduct.review_count_c || 0,
+    category: dbProduct.category_c || 'Uncategorized',
+    inStock: dbProduct.in_stock_c !== undefined ? dbProduct.in_stock_c : true,
     images: dbProduct.images_c ? [dbProduct.images_c] : ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop"],
     specifications: {
-      batteryLife: dbProduct.specifications_battery_life_c,
-      benefits: dbProduct.specifications_benefits_c,
-      bpaFree: dbProduct.specifications_bpa_free_c,
-      brightness: dbProduct.specifications_brightness_c,
-      capacity: dbProduct.specifications_capacity_c,
-      care: dbProduct.specifications_care_c,
-      charging: dbProduct.specifications_charging_c,
-      chargingTime: dbProduct.specifications_charging_time_c,
-      connectivity: dbProduct.specifications_connectivity_c,
-      crueltyFree: dbProduct.specifications_cruelty_free_c,
-      material: dbProduct.specifications_material_c,
-      size: dbProduct.specifications_size_c,
-      weight: dbProduct.specifications_weight_c,
+      batteryLife: dbProduct.specifications_battery_life_c || null,
+      benefits: dbProduct.specifications_benefits_c || null,
+      bpaFree: dbProduct.specifications_bpa_free_c || null,
+      brightness: dbProduct.specifications_brightness_c || null,
+      capacity: dbProduct.specifications_capacity_c || null,
+      care: dbProduct.specifications_care_c || null,
+      charging: dbProduct.specifications_charging_c || null,
+      chargingTime: dbProduct.specifications_charging_time_c || null,
+      connectivity: dbProduct.specifications_connectivity_c || null,
+      crueltyFree: dbProduct.specifications_cruelty_free_c || null,
+      material: dbProduct.specifications_material_c || null,
+      size: dbProduct.specifications_size_c || null,
+      weight: dbProduct.specifications_weight_c || null,
     },
     variants: dbProduct.variants_color_c || dbProduct.variants_name_c || dbProduct.variants_size_c ? [{
-      color: dbProduct.variants_color_c,
-      name: dbProduct.variants_name_c,
-      size: dbProduct.variants_size_c,
+      color: dbProduct.variants_color_c || null,
+      name: dbProduct.variants_name_c || null,
+      size: dbProduct.variants_size_c || null,
     }] : []
   };
 };
-
 export const productService = {
   async getAll() {
     try {
@@ -123,9 +122,13 @@ export const productService = {
       if (!response.success) {
         console.error("Failed to fetch products:", response.message);
         return [];
-      }
+}
 
-      return (response.data || []).map(mapFromDatabase);
+      const products = (response.data || [])
+        .map(mapFromDatabase)
+        .filter(product => product !== null); // Filter out any null products
+      
+      return products;
     } catch (error) {
       console.error("Error fetching products:", error);
       return [];
