@@ -103,8 +103,8 @@ const handleBuyNow = () => {
         window.location.href = `/login?redirect=${encodeURIComponent(paymentRedirectUrl)}`;
       }, 100);
     } else {
-      // Authenticated users go directly to payment page for streamlined purchase
-      navigate("/payment");
+      // Authenticated users go directly to payment page with product context
+      navigate(`/payment?product=${product.id}`);
     }
   };
 
