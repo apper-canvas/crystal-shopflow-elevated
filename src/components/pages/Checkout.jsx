@@ -141,9 +141,35 @@ const Checkout = () => {
     }
   };
 
-  if (cart.length === 0) {
-    navigate("/cart");
-    return null;
+if (cart.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="mb-6">
+            <ApperIcon name="ShoppingCart" size={48} className="mx-auto text-gray-400 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
+            <p className="text-gray-600">Add some items to your cart before proceeding to checkout.</p>
+          </div>
+          <div className="space-y-3">
+            <Button
+              onClick={() => navigate("/")}
+              className="w-full"
+              size="lg"
+            >
+              Continue Shopping
+            </Button>
+            <Button
+              onClick={() => navigate("/cart")}
+              variant="outline"
+              className="w-full"
+              size="lg"
+            >
+              View Cart
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const steps = [
