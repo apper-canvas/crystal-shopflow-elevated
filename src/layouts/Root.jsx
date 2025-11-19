@@ -112,28 +112,22 @@ export default function Root() {
     dispatch(setInitialized(true)); // Redux state for route guards
   };
 
-  const handleNavigation = () => {
+const handleNavigation = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const redirectPath = urlParams.get("redirect");
 
     if (redirectPath) {
       navigate(redirectPath);
-} else {
-      // Check if this is a payment flow authentication
-      const urlParams = new URLSearchParams(window.location.search);
-      const isPaymentFlow = urlParams.get("payment") === "true";
+    } else {
+      // Always redirect to checkout page after authentication
+      // Check if we're on auth pages to determine if redirect is needed
+      const authPages = ["/login", "/signup", "/callback"];
+      const isOnAuthPage = authPages.some(page =>
+        window.location.pathname.includes(page)
+      );
       
-      if (isPaymentFlow) {
+      if (isOnAuthPage) {
         navigate("/checkout");
-      } else {
-        // Navigate to home only if on auth pages
-        const authPages = ["/login", "/signup", "/callback"];
-        const isOnAuthPage = authPages.some(page =>
-          window.location.pathname.includes(page)
-        );
-        if (isOnAuthPage) {
-          navigate("/");
-        }
       }
     }
   };

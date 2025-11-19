@@ -8,7 +8,7 @@ function Signup() {
   const { user } = useSelector(state => state.user);
   const navigate = useNavigate();
   
-  useEffect(() => {
+useEffect(() => {
     if (isInitialized) {
       const { ApperUI } = window.ApperSDK;
       if(!user) {
@@ -16,7 +16,8 @@ function Signup() {
       }else{
         const searchParams = new URLSearchParams(window.location.search);
         const redirectPath = searchParams.get('redirect');
-        navigate(redirectPath ? redirectPath : "/");
+        // Redirect to checkout after signup (payment flow)
+        navigate(redirectPath ? redirectPath : "/checkout");
       }
     }
   }, [isInitialized, user, navigate]);
