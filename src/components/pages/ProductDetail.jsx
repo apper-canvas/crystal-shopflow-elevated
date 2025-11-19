@@ -97,11 +97,41 @@ const handleBuyNow = () => {
     handleAddToCart();
     
     if (!isAuthenticated) {
-      // Redirect unauthenticated users to login with payment redirect
-      const paymentRedirectUrl = `/payment?product=${product.id}`;
-      setTimeout(() => {
-        window.location.href = `/login?redirect=${encodeURIComponent(paymentRedirectUrl)}`;
-      }, 100);
+      // Show ApperUI login modal for unauthenticated users
+      const { ApperUI } = window.ApperSDK;
+      
+      // Configure success callback to navigate to payment after login
+      const originalOnSuccess = ApperUI.onSuccess;
+      ApperUI.onSuccess = (user) => {
+        // Call original success handler to update Redux state
+        if (originalOnSuccess) {
+          originalOnSuccess(user);
+        }
+        // Navigate to payment page with product context after successful login
+        setTimeout(() => {
+          navigate(`/payment?product=${product.id}`);
+        }, 100);
+      };
+      
+      // Show login modal
+      ApperUI.showLogin("#login-modal");
+      
+      // Create modal container if it doesn't exist
+      if (!document.getElementById("login-modal")) {
+        const modalDiv = document.createElement("div");
+        modalDiv.id = "login-modal";
+        modalDiv.style.position = "fixed";
+        modalDiv.style.top = "0";
+        modalDiv.style.left = "0";
+        modalDiv.style.width = "100%";
+        modalDiv.style.height = "100%";
+        modalDiv.style.zIndex = "9999";
+        modalDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+        modalDiv.style.display = "flex";
+        modalDiv.style.alignItems = "center";
+        modalDiv.style.justifyContent = "center";
+        document.body.appendChild(modalDiv);
+      }
     } else {
       // Authenticated users go directly to payment page with product context
       navigate(`/payment?product=${product.id}`);
