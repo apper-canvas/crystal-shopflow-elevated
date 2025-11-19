@@ -8,19 +8,45 @@ function Login() {
   const { user } = useSelector(state => state.user);
   const navigate = useNavigate();
   
-useEffect(() => {
-    if (isInitialized) {
-      const { ApperUI } = window.ApperSDK;
-      if(!user) {
-        ApperUI.showLogin("#login-modal");
-      }else{
-        const searchParams = new URLSearchParams(window.location.search);
-        const redirectPath = searchParams.get('redirect');
-        // Redirect to checkout after login (payment flow)
-        navigate(redirectPath ? redirectPath : "/checkout");
-      }
+  // Redirect authenticated users immediately
+  useEffect(() => {
+    if (isInitialized && user) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectPath = searchParams.get('redirect');
+      // Redirect to checkout after login (payment flow)
+      navigate(redirectPath ? redirectPath : "/checkout");
     }
   }, [isInitialized, user, navigate]);
+
+  // Initialize login modal for unauthenticated users
+  useEffect(() => {
+    if (isInitialized && !user) {
+      // Check if ApperSDK is available
+      if (!window.ApperSDK || !window.ApperSDK.ApperUI) {
+        console.error('ApperSDK not loaded. Please ensure the SDK script is included.');
+        return;
+      }
+
+      // Wait for DOM to be ready
+      const initializeLogin = () => {
+        const loginElement = document.getElementById('login-modal');
+        if (loginElement) {
+          try {
+            const { ApperUI } = window.ApperSDK;
+            ApperUI.showLogin("#login-modal");
+          } catch (error) {
+            console.error('Error initializing login modal:', error);
+          }
+        } else {
+          // Retry after a short delay if element not found
+          setTimeout(initializeLogin, 100);
+        }
+      };
+
+      // Start initialization
+      initializeLogin();
+    }
+  }, [isInitialized, user]);
   
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-50 dark:bg-surface-900">
