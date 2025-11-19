@@ -10,10 +10,10 @@ function Login() {
   
   // Redirect authenticated users immediately
   useEffect(() => {
-    if (isInitialized && user) {
+if (isInitialized && user) {
       const searchParams = new URLSearchParams(window.location.search);
       const redirectPath = searchParams.get('redirect');
-      // Redirect to checkout after login (payment flow)
+      // Redirect to specified path or checkout after login
       navigate(redirectPath ? redirectPath : "/checkout");
     }
   }, [isInitialized, user, navigate]);
@@ -28,8 +28,8 @@ function Login() {
       }
 
       // Wait for DOM to be ready
-      const initializeLogin = () => {
-        const loginElement = document.getElementById('login-modal');
+const initializeLogin = () => {
+        const loginElement = document.getElementById('login-modal') || document.getElementById('authentication');
         if (loginElement) {
           try {
             const { ApperUI } = window.ApperSDK;
@@ -64,6 +64,7 @@ function Login() {
             </div>
           </div>
         </div>
+<div id="authentication" />
 <div id="login-modal" />
         <div className="text-center mt-4">
           <p className="text-sm text-surface-600 dark:text-surface-400">

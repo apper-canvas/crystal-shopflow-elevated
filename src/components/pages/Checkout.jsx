@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import Input from "@/components/atoms/Input";
 import Button from "@/components/atoms/Button";
@@ -12,8 +13,16 @@ const Checkout = () => {
   const { cart, clearCart } = useCart();
   const navigate = useNavigate();
 
-  const [currentStep, setCurrentStep] = useState(1);
+const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
+  
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated && user === null) {
+      navigate('/login?redirect=/checkout');
+    }
+  }, [isAuthenticated, user, navigate]);
   
   const [formData, setFormData] = useState({
     shipping: {
@@ -141,7 +150,16 @@ const Checkout = () => {
     }
   };
 
-if (cart.length === 0) {
+// Show loading state while authentication is being checked
+  if (!isAuthenticated && user === null) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
@@ -166,6 +184,16 @@ if (cart.length === 0) {
             >
               View Cart
             </Button>
+            {isAuthenticated && (
+              <Button
+                onClick={() => navigate("/payment")}
+                variant="outline"
+                className="w-full"
+                size="lg"
+              >
+                Proceed to Payment
+              </Button>
+            )}
           </div>
         </div>
       </div>

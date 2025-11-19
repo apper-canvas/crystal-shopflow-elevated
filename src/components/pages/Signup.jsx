@@ -12,11 +12,17 @@ useEffect(() => {
     if (isInitialized) {
       const { ApperUI } = window.ApperSDK;
       if(!user) {
-        ApperUI.showSignup("#authentication");
+        // Check if authentication element exists in modal or regular page
+        const authElement = document.getElementById('authentication') || document.getElementById('signup-modal');
+        if (authElement) {
+          ApperUI.showSignup(`#${authElement.id}`);
+        } else {
+          ApperUI.showSignup("#authentication");
+        }
       }else{
         const searchParams = new URLSearchParams(window.location.search);
         const redirectPath = searchParams.get('redirect');
-        // Redirect to checkout after signup (payment flow)
+        // Redirect to specified path or checkout after signup
         navigate(redirectPath ? redirectPath : "/checkout");
       }
     }
@@ -42,7 +48,8 @@ useEffect(() => {
             </div>
           </div>
         </div>
-        <div id="authentication" />
+<div id="authentication" />
+        <div id="signup-modal" />
         <div className="text-center mt-4">
           <p className="text-sm text-surface-600 dark:text-surface-400">
             Already have an account?{' '}

@@ -97,28 +97,10 @@ const handleBuyNow = () => {
     handleAddToCart();
     
     if (!isAuthenticated) {
-      // Show ApperUI login modal for unauthenticated users
-      const { ApperUI } = window.ApperSDK;
-      
-      // Configure success callback to navigate to payment after login
-      const originalOnSuccess = ApperUI.onSuccess;
-      ApperUI.onSuccess = (user) => {
-        // Call original success handler to update Redux state
-        if (originalOnSuccess) {
-          originalOnSuccess(user);
-        }
-        // Navigate to payment page with product context after successful login
-        setTimeout(() => {
-          navigate(`/payment?product=${product.id}`);
-        }, 100);
-      };
-      
-      // Show login modal
-      ApperUI.showLogin("#login-modal");
-      
-      // Create modal container if it doesn't exist
-      if (!document.getElementById("login-modal")) {
-        const modalDiv = document.createElement("div");
+      // Create modal container first if it doesn't exist
+      let modalDiv = document.getElementById("login-modal");
+      if (!modalDiv) {
+        modalDiv = document.createElement("div");
         modalDiv.id = "login-modal";
         modalDiv.style.position = "fixed";
         modalDiv.style.top = "0";
@@ -132,6 +114,34 @@ const handleBuyNow = () => {
         modalDiv.style.justifyContent = "center";
         document.body.appendChild(modalDiv);
       }
+      
+      // Show ApperUI login modal for unauthenticated users
+      const { ApperUI } = window.ApperSDK;
+      
+      // Store original success handler
+      const originalOnSuccess = ApperUI.onSuccess;
+      
+      // Configure success callback to navigate to payment after login
+      ApperUI.onSuccess = (user) => {
+        // Call original success handler to update Redux state
+        if (originalOnSuccess) {
+          originalOnSuccess(user);
+        }
+        
+        // Clean up modal
+        const modal = document.getElementById("login-modal");
+        if (modal) {
+          modal.remove();
+        }
+        
+        // Navigate to payment page with product context after successful login
+        setTimeout(() => {
+          navigate(`/payment?product=${product.id}`);
+        }, 100);
+      };
+      
+      // Show login modal
+      ApperUI.showLogin("#login-modal");
     } else {
       // Authenticated users go directly to payment page with product context
       navigate(`/payment?product=${product.id}`);
