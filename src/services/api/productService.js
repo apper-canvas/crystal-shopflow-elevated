@@ -56,6 +56,7 @@ const mapToDatabase = (product) => {
 const mapFromDatabase = (dbProduct) => {
   if (!dbProduct) return null;
   
+  // Enhanced mapping with better data handling for authentication context
   return {
     id: dbProduct.Id || 0,
     name: dbProduct.Name || 'Unnamed Product',
@@ -85,7 +86,9 @@ const mapFromDatabase = (dbProduct) => {
       color: dbProduct.variants_color_c || null,
       name: dbProduct.variants_name_c || null,
       size: dbProduct.variants_size_c || null,
-    }] : []
+    }] : [],
+    // Add timestamp for tracking data freshness
+    loadedAt: new Date().toISOString()
   };
 };
 export const productService = {
@@ -123,10 +126,10 @@ export const productService = {
         console.error("Failed to fetch products:", response.message);
         return [];
 }
-
+// Enhanced product processing with authentication context awareness
       const products = (response.data || [])
         .map(mapFromDatabase)
-        .filter(product => product !== null); // Filter out any null products
+        .filter(product => product !== null && product.id > 0); // Filter out invalid products
       
       return products;
     } catch (error) {

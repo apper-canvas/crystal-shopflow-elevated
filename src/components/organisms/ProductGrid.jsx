@@ -107,7 +107,7 @@ const filteredAndSortedProducts = useMemo(() => {
           <h1 className="text-3xl font-bold text-gray-900">
             Our Products
           </h1>
-          <p className="text-gray-600 mt-2">
+<p className="text-gray-600 mt-2">
             Showing {filteredAndSortedProducts?.length || 0} of {Array.isArray(products) ? products.length : 0} products
           </p>
         </div>

@@ -97,18 +97,14 @@ const handleBuyNow = () => {
     handleAddToCart();
     
     if (!isAuthenticated) {
-      // Show login modal for unauthenticated users with payment redirect
-      const currentUrl = window.location.pathname + window.location.search;
-      const separator = currentUrl.includes('?') ? '&' : '?';
-      const paymentRedirectUrl = `${currentUrl}${separator}payment=true`;
-      
-      // Trigger login modal programmatically
+      // Redirect unauthenticated users to login with payment redirect
+      const paymentRedirectUrl = `/payment?product=${product.id}`;
       setTimeout(() => {
-        window.location.href = `/login?redirect=${encodeURIComponent('/checkout')}`;
+        window.location.href = `/login?redirect=${encodeURIComponent(paymentRedirectUrl)}`;
       }, 100);
     } else {
-      // Authenticated users go directly to checkout
-      navigate("/checkout");
+      // Authenticated users go directly to payment page for streamlined purchase
+      navigate("/payment");
     }
   };
 

@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import React, { Suspense, lazy } from "react";
-import Root from "@/layouts/Root";
-import { getRouteConfig } from "@/router/route.utils";
 import Layout from "@/components/organisms/Layout";
+import { getRouteConfig } from "@/router/route.utils";
+import Root from "@/layouts/Root";
 
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -20,6 +20,7 @@ const Home = lazy(() => import("@/components/pages/Home"));
 const ProductDetail = lazy(() => import("@/components/pages/ProductDetail"));
 const Cart = lazy(() => import("@/components/pages/Cart"));
 const Checkout = lazy(() => import("@/components/pages/Checkout"));
+const Payment = lazy(() => import("@/components/pages/Payment"));
 const OrderConfirmation = lazy(() => import("@/components/pages/OrderConfirmation"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 const Login = lazy(() => import("@/components/pages/Login"));
@@ -71,13 +72,17 @@ const mainRoutes = [
     path: "product/:id",
     element: <ProductDetail />
   }),
-  createRoute({
+createRoute({
     path: "cart",
     element: <Cart />
   }),
   createRoute({
     path: "checkout",
     element: <Checkout />
+  }),
+  createRoute({
+    path: "payment",
+    element: <Payment />
   }),
   createRoute({
     path: "order-confirmation/:orderId",
