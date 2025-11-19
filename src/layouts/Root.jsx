@@ -118,14 +118,22 @@ export default function Root() {
 
     if (redirectPath) {
       navigate(redirectPath);
-    } else {
-      // Navigate to home only if on auth pages
-      const authPages = ["/login", "/signup", "/callback"];
-      const isOnAuthPage = authPages.some(page =>
-        window.location.pathname.includes(page)
-      );
-      if (isOnAuthPage) {
-        navigate("/");
+} else {
+      // Check if this is a payment flow authentication
+      const urlParams = new URLSearchParams(window.location.search);
+      const isPaymentFlow = urlParams.get("payment") === "true";
+      
+      if (isPaymentFlow) {
+        navigate("/checkout");
+      } else {
+        // Navigate to home only if on auth pages
+        const authPages = ["/login", "/signup", "/callback"];
+        const isOnAuthPage = authPages.some(page =>
+          window.location.pathname.includes(page)
+        );
+        if (isOnAuthPage) {
+          navigate("/");
+        }
       }
     }
   };

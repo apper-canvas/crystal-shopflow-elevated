@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
@@ -12,7 +13,8 @@ import { toast } from "react-toastify";
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+const { addToCart } = useCart();
+  const { isAuthenticated } = useSelector(state => state.user);
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -91,9 +93,23 @@ addToCart({
     toast.success(`Added ${quantity} item(s) to cart!`);
   };
 
-  const handleBuyNow = () => {
+const handleBuyNow = () => {
     handleAddToCart();
-    navigate("/cart");
+    
+    if (!isAuthenticated) {
+      // Show login modal for unauthenticated users with payment redirect
+      const currentUrl = window.location.pathname + window.location.search;
+      const separator = currentUrl.includes('?') ? '&' : '?';
+      const paymentRedirectUrl = `${currentUrl}${separator}payment=true`;
+      
+      // Trigger login modal programmatically
+      setTimeout(() => {
+        window.location.href = `/login?redirect=${encodeURIComponent('/checkout')}`;
+      }, 100);
+    } else {
+      // Authenticated users go directly to checkout
+      navigate("/checkout");
+    }
   };
 
   if (loading) {
