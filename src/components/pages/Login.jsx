@@ -12,7 +12,7 @@ useEffect(() => {
     if (isInitialized) {
       const { ApperUI } = window.ApperSDK;
       if(!user) {
-        ApperUI.showLogin("#authentication");
+        ApperUI.showLogin("#login-modal");
       }else{
         const searchParams = new URLSearchParams(window.location.search);
         const redirectPath = searchParams.get('redirect');
@@ -38,7 +38,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-        <div id="authentication" />
+<div id="login-modal" />
         <div className="text-center mt-4">
           <p className="text-sm text-surface-600 dark:text-surface-400">
             Don't have an account?{' '}
